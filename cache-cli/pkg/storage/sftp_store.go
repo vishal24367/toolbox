@@ -10,7 +10,7 @@ import (
 
 func (s *SFTPStorage) Store(key, path string) error {
 	epochNanos := time.Now().UnixNano()
-	tmpKey := fmt.Sprintf("%s-%d", os.Getenv("SEMAPHORE_JOB_ID"), epochNanos)
+	tmpKey := fmt.Sprintf("%s-%d", os.Getenv("NEETO_CI_JOB_ID"), epochNanos)
 
 	localFileInfo, err := os.Stat(path)
 	if err != nil {
@@ -76,6 +76,9 @@ func (s *SFTPStorage) allocateSpace(space int64) error {
 	if freeSpace < space {
 		fmt.Printf("Not enough space, deleting keys based on %s...\n", s.Config().SortKeysBy)
 		keys, err := s.List()
+		keys = filter(keys, func(key CacheKey) bool {
+			return key.Name[0] != '.' && key.Name != "neetoci"
+		})
 		if err != nil {
 			return err
 		}
@@ -94,4 +97,15 @@ func (s *SFTPStorage) allocateSpace(space int64) error {
 	}
 
 	return nil
+}
+
+func filter(keys []CacheKey, predicate func(CacheKey) bool) []CacheKey {
+	var filteredKeys []CacheKey
+	for _, key := range keys {
+		if predicate(key) {
+			filteredKeys = append(filteredKeys, key)
+		}
+	}
+
+	return filteredKeys
 }

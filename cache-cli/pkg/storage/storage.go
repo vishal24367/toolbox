@@ -2,7 +2,6 @@ package storage
 
 import (
 	"fmt"
-	"math"
 	"os"
 	"strconv"
 	"time"
@@ -63,43 +62,26 @@ func InitStorageWithConfig(config StorageConfig) (Storage, error) {
 		return nil, err
 	}
 
-	backend := os.Getenv("SEMAPHORE_CACHE_BACKEND")
+	backend := os.Getenv("NEETO_CI_CACHE_BACKEND")
 	if backend == "" {
-		return nil, fmt.Errorf("no SEMAPHORE_CACHE_BACKEND environment variable set")
+		return nil, fmt.Errorf("no NEETO_CI_CACHE_BACKEND environment variable set")
 	}
 
 	switch backend {
-	case "s3":
-		project := os.Getenv("SEMAPHORE_PROJECT_ID")
-		if project == "" {
-			return nil, fmt.Errorf("no SEMAPHORE_PROJECT_ID set")
-		}
-
-		s3Bucket := os.Getenv("SEMAPHORE_CACHE_S3_BUCKET")
-		if s3Bucket == "" {
-			return nil, fmt.Errorf("no SEMAPHORE_CACHE_S3_BUCKET set")
-		}
-
-		return NewS3Storage(S3StorageOptions{
-			URL:     os.Getenv("SEMAPHORE_CACHE_S3_URL"),
-			Bucket:  s3Bucket,
-			Project: project,
-			Config:  StorageConfig{MaxSpace: math.MaxInt64, SortKeysBy: config.SortKeysBy},
-		})
 	case "sftp":
-		url := os.Getenv("SEMAPHORE_CACHE_URL")
+		url := os.Getenv("NEETO_CI_CACHE_URL")
 		if url == "" {
-			return nil, fmt.Errorf("no SEMAPHORE_CACHE_URL set")
+			return nil, fmt.Errorf("no NEETO_CI_CACHE_URL set")
 		}
 
-		username := os.Getenv("SEMAPHORE_CACHE_USERNAME")
+		username := os.Getenv("NEETO_CI_CACHE_USERNAME")
 		if username == "" {
-			return nil, fmt.Errorf("no SEMAPHORE_CACHE_USERNAME set")
+			return nil, fmt.Errorf("no NEETO_CI_CACHE_USERNAME set")
 		}
 
-		privateKeyPath := os.Getenv("SEMAPHORE_CACHE_PRIVATE_KEY_PATH")
+		privateKeyPath := os.Getenv("NEETO_CI_CACHE_PRIVATE_KEY_PATH")
 		if privateKeyPath == "" {
-			return nil, fmt.Errorf("no SEMAPHORE_CACHE_PRIVATE_KEY_PATH set")
+			return nil, fmt.Errorf("no NEETO_CI_CACHE_PRIVATE_KEY_PATH set")
 		}
 
 		return NewSFTPStorage(SFTPStorageOptions{
@@ -114,18 +96,18 @@ func InitStorageWithConfig(config StorageConfig) (Storage, error) {
 }
 
 func buildStorageConfig(config StorageConfig, defaultValue int64) StorageConfig {
-	cacheSizeEnvVar := os.Getenv("CACHE_SIZE")
+	cacheSizeEnvVar := os.Getenv("NEETO_CI_CACHE_SIZE")
 	if cacheSizeEnvVar == "" {
 		return StorageConfig{MaxSpace: defaultValue, SortKeysBy: config.SortKeysBy}
 	}
 
 	cacheSize, err := strconv.ParseInt(cacheSizeEnvVar, 10, 64)
 	if err != nil {
-		log.Errorf("Couldn't parse CACHE_SIZE value of '%s' - using default value for storage backend", cacheSizeEnvVar)
+		log.Errorf("Couldn't parse NEETO_CI_CACHE_SIZE value of '%s' - using default value for storage backend", cacheSizeEnvVar)
 		return StorageConfig{MaxSpace: defaultValue, SortKeysBy: config.SortKeysBy}
 	}
 
-	// CACHE_SIZE receives kb
+	// NEETO_CI_CACHE_SIZE receives kb
 	return StorageConfig{MaxSpace: cacheSize * 1024, SortKeysBy: config.SortKeysBy}
 }
 

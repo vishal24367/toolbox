@@ -133,7 +133,7 @@ func publishMetrics(metricsManager metrics.MetricsManager, fileInfo fs.FileInfo,
 		{Name: metrics.CacheDownloadTime, Value: downloadDuration.String()},
 	}
 
-	username := os.Getenv("SEMAPHORE_CACHE_USERNAME")
+	username := os.Getenv("NEETO_CI_CACHE_USERNAME")
 	if username != "" {
 		metricsToPublish = append(metricsToPublish, metrics.Metric{Name: metrics.CacheUser, Value: username})
 	}
@@ -152,7 +152,7 @@ func publishMetrics(metricsManager metrics.MetricsManager, fileInfo fs.FileInfo,
 }
 
 func getCacheServerIP() string {
-	cacheURL := os.Getenv("SEMAPHORE_CACHE_URL")
+	cacheURL := os.Getenv("NEETO_CI_CACHE_URL")
 	if cacheURL != "" {
 		ipAndPort := strings.Split(cacheURL, ":")
 		if len(ipAndPort) != 2 {
