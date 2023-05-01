@@ -108,6 +108,16 @@ func InitStorageWithConfig(config StorageConfig) (Storage, error) {
 			PrivateKeyPath: privateKeyPath,
 			Config:         buildStorageConfig(config, 9*1024*1024*1024),
 		})
+	case "local_storage":
+		local_path := os.Getenv("LOCAL_PATH")
+		if local_path == "" {
+			return nil, fmt.Errorf("no LOCAL_PATH set")
+		}
+
+		return NewLocalStorage(LocalStorageOptions{
+			Path:   local_path,
+			Config: buildStorageConfig(config, 9*1024*1024*1024),
+		})
 	default:
 		return nil, fmt.Errorf("cache backend '%s' is not available", backend)
 	}
