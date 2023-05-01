@@ -90,6 +90,16 @@ func InitStorageWithConfig(config StorageConfig) (Storage, error) {
 			PrivateKeyPath: privateKeyPath,
 			Config:         buildStorageConfig(config, 9*1024*1024*1024),
 		})
+	case "local":
+		local_storage_path := os.Getenv("NEETO_CI_LOCAL_PATH")
+		if local_storage_path == "" {
+			return nil, fmt.Errorf("no NEETO_CI_LOCAL_PATH set")
+		}
+
+		return NewLocalStorage(LocalStorageOptions{
+			Path:   local_storage_path,
+			Config: buildStorageConfig(config, 9*1024*1024*1024),
+		})
 	default:
 		return nil, fmt.Errorf("cache backend '%s' is not available", backend)
 	}
