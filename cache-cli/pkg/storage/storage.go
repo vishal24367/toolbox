@@ -91,9 +91,9 @@ func InitStorageWithConfig(config StorageConfig) (Storage, error) {
 			Config:         buildStorageConfig(config, 9*1024*1024*1024),
 		})
 	case "local":
-		local_storage_path := os.Getenv("NEETO_CI_LOCAL_PATH")
+		local_storage_path := os.Getenv("NEETO_CI_LOCAL_CACHE_DIR")
 		if local_storage_path == "" {
-			return nil, fmt.Errorf("no NEETO_CI_LOCAL_PATH set")
+			return nil, fmt.Errorf("no NEETO_CI_LOCAL_CACHE_DIR set")
 		}
 
 		return NewLocalStorage(LocalStorageOptions{
