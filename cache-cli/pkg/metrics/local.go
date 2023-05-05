@@ -27,7 +27,7 @@ func NewLocalMetricsBackend() (*LocalMetricsManager, error) {
 }
 
 func (b *LocalMetricsManager) Enabled() bool {
-	return os.Getenv("SEMAPHORE_TOOLBOX_METRICS_ENABLED") == "true"
+	return os.Getenv("NEETO_CI_TOOLBOX_METRICS_ENABLED") == "true"
 }
 
 func (b *LocalMetricsManager) PublishBatch(metrics []Metric) error {

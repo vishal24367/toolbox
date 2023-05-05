@@ -5,7 +5,6 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     depends_on:
-      - s3
       - sftp-server
     tty: true
     command: "sleep 0"
@@ -14,15 +13,7 @@ services:
       - go-pkg-cache:/go
       - .:/app
     environment:
-      SEMAPHORE_CACHE_S3_URL: "http://s3:9000"
-      SEMAPHORE_TOOLBOX_METRICS_ENABLED: "true"
-  s3:
-    image: quay.io/minio/minio:RELEASE.2021-09-15T04-54-25Z
-    container_name: 's3'
-    ports:
-      - 9000:9000
-    entrypoint: sh
-    command: -c 'mkdir -p /tmp/s3-data/semaphore-cache && minio server /tmp/s3-data'
+      NEETO_CI_TOOLBOX_METRICS_ENABLED: "true"
   sftp-server:
     container_name: sftp-server
     ports:

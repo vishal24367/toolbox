@@ -147,12 +147,12 @@ func NormalizeKey(key string) string {
 }
 
 func FindGitBranch() string {
-	gitPrBranch := os.Getenv("SEMAPHORE_GIT_PR_BRANCH")
+	gitPrBranch := os.Getenv("NEETO_CI_GIT_PR_BRANCH")
 	if gitPrBranch != "" {
 		return gitPrBranch
 	}
 
-	return os.Getenv("SEMAPHORE_GIT_BRANCH")
+	return os.Getenv("NEETO_CI_GIT_BRANCH")
 }
 
 func init() {

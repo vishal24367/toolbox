@@ -2,17 +2,18 @@ package storage
 
 import (
 	"fmt"
-	"os"
 	"time"
+	"os"
+	"path"
 
 	log "github.com/sirupsen/logrus"
 )
 
-func (s *SFTPStorage) Store(key, path string) error {
+func (s *LocalStorage) Store(key, localFilePath string) error {
 	epochNanos := time.Now().UnixNano()
 	tmpKey := fmt.Sprintf("%s-%d", os.Getenv("NEETO_CI_JOB_ID"), epochNanos)
 
-	localFileInfo, err := os.Stat(path)
+	localFileInfo, err := os.Stat(localFilePath)
 	if err != nil {
 		return err
 	}
@@ -22,13 +23,14 @@ func (s *SFTPStorage) Store(key, path string) error {
 		return err
 	}
 
-	// #nosec
-	localFile, err := os.Open(path)
+	localFile, err := os.Open(localFilePath)
 	if err != nil {
 		return err
 	}
 
-	remoteTmpFile, err := s.SFTPClient.Create(tmpKey)
+	// create tmp file in s.Path directory
+	remoteTmpFilePath := path.Join(s.Path, tmpKey)
+	remoteTmpFile, err := os.Create(remoteTmpFilePath)
 	if err != nil {
 		_ = localFile.Close()
 		return err
@@ -37,8 +39,8 @@ func (s *SFTPStorage) Store(key, path string) error {
 	_, err = remoteTmpFile.ReadFrom(localFile)
 
 	if err != nil {
-		if rmErr := s.SFTPClient.Remove(tmpKey); rmErr != nil {
-			log.Errorf("Error removing temporary file %s: %v", tmpKey, rmErr)
+		if rmErr := os.Remove(remoteTmpFilePath); rmErr != nil {
+			log.Errorf("Error removing temporary file %s: %v", remoteTmpFilePath, rmErr)
 		}
 
 		_ = localFile.Close()
@@ -46,10 +48,10 @@ func (s *SFTPStorage) Store(key, path string) error {
 		return err
 	}
 
-	err = s.SFTPClient.PosixRename(tmpKey, key)
+	err = os.Rename(remoteTmpFilePath, path.Join(s.Path, key))
 	if err != nil {
-		if rmErr := s.SFTPClient.Remove(tmpKey); rmErr != nil {
-			log.Errorf("Error removing temporary file %s: %v", tmpKey, rmErr)
+		if rmErr := os.Remove(remoteTmpFilePath); rmErr != nil {
+			log.Errorf("Error removing temporary file %s: %v", remoteTmpFilePath, rmErr)
 		}
 
 		_ = localFile.Close()
@@ -66,7 +68,7 @@ func (s *SFTPStorage) Store(key, path string) error {
 	return localFile.Close()
 }
 
-func (s *SFTPStorage) allocateSpace(space int64) error {
+func (s *LocalStorage) allocateSpace(space int64) error {
 	usage, err := s.Usage()
 	if err != nil {
 		return err
@@ -76,9 +78,6 @@ func (s *SFTPStorage) allocateSpace(space int64) error {
 	if freeSpace < space {
 		fmt.Printf("Not enough space, deleting keys based on %s...\n", s.Config().SortKeysBy)
 		keys, err := s.List()
-		keys = filter(keys, func(key CacheKey) bool {
-			return key.Name[0] != '.' && key.Name != "neetoci"
-		})
 		if err != nil {
 			return err
 		}
@@ -97,15 +96,4 @@ func (s *SFTPStorage) allocateSpace(space int64) error {
 	}
 
 	return nil
-}
-
-func filter(keys []CacheKey, predicate func(CacheKey) bool) []CacheKey {
-	var filteredKeys []CacheKey
-	for _, key := range keys {
-		if predicate(key) {
-			filteredKeys = append(filteredKeys, key)
-		}
-	}
-
-	return filteredKeys
 }

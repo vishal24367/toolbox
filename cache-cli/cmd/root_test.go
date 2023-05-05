@@ -18,22 +18,13 @@ type TestBackend struct {
 }
 
 var testBackends = map[string]TestBackend{
-	"s3": {
-		runInWindows: true,
-		envVars: map[string]string{
-			"SEMAPHORE_PROJECT_ID":      "cache-cli",
-			"SEMAPHORE_CACHE_BACKEND":   "s3",
-			"SEMAPHORE_CACHE_S3_URL":    os.Getenv("SEMAPHORE_CACHE_S3_URL"),
-			"SEMAPHORE_CACHE_S3_BUCKET": "semaphore-cache",
-		},
-	},
 	"sftp": {
 		runInWindows: false,
 		envVars: map[string]string{
-			"SEMAPHORE_CACHE_BACKEND":          "sftp",
-			"SEMAPHORE_CACHE_URL":              "sftp-server:22",
-			"SEMAPHORE_CACHE_USERNAME":         "tester",
-			"SEMAPHORE_CACHE_PRIVATE_KEY_PATH": "/root/.ssh/semaphore_cache_key",
+			"NEETO_CI_CACHE_BACKEND":          "sftp",
+			"NEETO_CI_CACHE_URL":              "sftp-server:22",
+			"NEETO_CI_CACHE_USERNAME":         "tester",
+			"NEETO_CI_CACHE_PRIVATE_KEY_PATH": "/root/.ssh/neeto_ci_cache_key",
 		},
 	},
 }

@@ -1,6 +1,6 @@
 package storage
 
-func (s *S3Storage) IsNotEmpty() (bool, error) {
+func (s *LocalStorage) IsNotEmpty() (bool, error) {
 	keys, err := s.List()
 	if err != nil {
 		return false, err
