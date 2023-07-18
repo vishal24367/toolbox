@@ -13,6 +13,17 @@ type TestStorageType struct {
 }
 
 var testStorageTypes = map[string]TestStorageType{
+	"s3": {
+		runInWindows: true,
+		initializer: func(storageSize int64, sortBy string) (Storage, error) {
+			return NewS3Storage(S3StorageOptions{
+				URL:     os.Getenv("SEMAPHORE_CACHE_S3_URL"),
+				Bucket:  "semaphore-cache",
+				Project: "cache-cli",
+				Config:  StorageConfig{MaxSpace: math.MaxInt64, SortKeysBy: sortBy},
+			})
+		},
+	},
 	"sftp": {
 		runInWindows: false,
 		initializer: func(storageSize int64, sortBy string) (Storage, error) {

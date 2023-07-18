@@ -2,6 +2,7 @@ package storage
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"time"
@@ -99,6 +100,23 @@ func InitStorageWithConfig(config StorageConfig) (Storage, error) {
 		return NewLocalStorage(LocalStorageOptions{
 			Path:   local_storage_path,
 			Config: buildStorageConfig(config, 9*1024*1024*1024),
+		})
+	case "s3":
+		project := os.Getenv("NEETO_CI_PROJECT_ID")
+		if project == "" {
+			return nil, fmt.Errorf("no NEETO_CI_PROJECT_ID set")
+		}
+
+		s3Bucket := os.Getenv("NEETO_CI_CACHE_S3_BUCKET")
+		if s3Bucket == "" {
+			return nil, fmt.Errorf("no NEETO_CI_CACHE_S3_BUCKET set")
+		}
+
+		return NewS3Storage(S3StorageOptions{
+			URL:     os.Getenv("NEETO_CI_CACHE_S3_URL"),
+			Bucket:  s3Bucket,
+			Project: project,
+			Config:  StorageConfig{MaxSpace: math.MaxInt64, SortKeysBy: config.SortKeysBy},
 		})
 	default:
 		return nil, fmt.Errorf("cache backend '%s' is not available", backend)
