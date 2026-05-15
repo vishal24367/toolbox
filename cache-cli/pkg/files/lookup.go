@@ -78,8 +78,9 @@ func resultForfile(filePath string, options LookupOptions) *LookupResult {
 			{"node-modules", "node_modules"},
 		})
 	case "yarn.lock":
+		// Only node_modules is cached: it makes `yarn install` instant on a
+		// cache hit, so restoring ~/.cache/yarn (~1.4 GB) adds no benefit.
 		return buildResult(filePath, options, []buildResultRequest{
-			{"yarn-cache", fmt.Sprintf("%s/.cache/yarn", homedir)},
 			{"node-modules", "node_modules"},
 		})
 	case "mix.lock":
@@ -139,7 +140,7 @@ func buildResult(filePath string, options LookupOptions, entries []buildResultRe
 				Keys: keysForRestore(entry.KeyPrefix, gitBranch, checksum),
 			})
 		} else {
-			key := fmt.Sprintf("%s-%s-%s", entry.KeyPrefix, gitBranch, checksum)
+			key := fmt.Sprintf("%s-%s-%s", gitBranch, entry.KeyPrefix, checksum)
 			newEntries = append(newEntries, LookupResultEntry{
 				Keys: []string{key},
 				Path: filepath.FromSlash(entry.Path),
@@ -155,16 +156,16 @@ func buildResult(filePath string, options LookupOptions, entries []buildResultRe
 
 func keysForRestore(keyPrefix, gitBranch, checksum string) []string {
 	keys := []string{
-		fmt.Sprintf("%s-%s-%s", keyPrefix, gitBranch, checksum),
-		fmt.Sprintf("%s-%s", keyPrefix, gitBranch),
+		fmt.Sprintf("%s-%s-%s", gitBranch, keyPrefix, checksum),
+		fmt.Sprintf("%s-%s", gitBranch, keyPrefix),
 	}
 
 	if gitBranch != "master" {
-		keys = append(keys, fmt.Sprintf("%s-master", keyPrefix))
+		keys = append(keys, fmt.Sprintf("master-%s", keyPrefix))
 	}
 
 	if gitBranch != "main" {
-		keys = append(keys, fmt.Sprintf("%s-main", keyPrefix))
+		keys = append(keys, fmt.Sprintf("main-%s", keyPrefix))
 	}
 
 	return keys

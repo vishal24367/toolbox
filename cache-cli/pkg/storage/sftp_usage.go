@@ -1,5 +1,7 @@
 package storage
 
+import "os"
+
 func (s *SFTPStorage) Usage() (*UsageSummary, error) {
 	files, err := s.SFTPClient.ReadDir(".")
 	if err != nil {
@@ -8,7 +10,10 @@ func (s *SFTPStorage) Usage() (*UsageSummary, error) {
 
 	var totalUsed int64
 	for _, file := range files {
-		totalUsed = totalUsed + file.Size()
+		if file.IsDir() || file.Mode()&os.ModeSymlink != 0 {
+			continue
+		}
+		totalUsed += file.Size()
 	}
 
 	return &UsageSummary{

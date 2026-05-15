@@ -30,10 +30,10 @@ var testBackends = map[string]TestBackend{
 	"sftp": {
 		runInWindows: false,
 		envVars: map[string]string{
-			"SEMAPHORE_CACHE_BACKEND":          "sftp",
-			"SEMAPHORE_CACHE_URL":              "sftp-server:22",
-			"SEMAPHORE_CACHE_USERNAME":         "tester",
-			"SEMAPHORE_CACHE_PRIVATE_KEY_PATH": "/root/.ssh/semaphore_cache_key",
+			"NEETO_CI_CACHE_BACKEND":          "sftp",
+			"NEETO_CI_CACHE_URL":              "sftp-server:22",
+			"NEETO_CI_CACHE_USERNAME":         "tester",
+			"NEETO_CI_CACHE_PRIVATE_KEY_PATH": "/root/.ssh/neeto_ci_cache_key",
 		},
 	},
 }

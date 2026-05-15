@@ -186,12 +186,12 @@ func Test__AutomaticRestore(t *testing.T) {
 			assert.Contains(t, output, "Nothing to restore from cache")
 		})
 
-		t.Run(fmt.Sprintf("%s detects and restores using SEMAPHORE_GIT_BRANCH", backend), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%s detects and restores using NEETO_CI_GIT_BRANCH", backend), func(t *testing.T) {
 			storage.Clear()
 
 			os.Chdir(fmt.Sprintf("%s/test/autocache/gems", rootPath))
-			os.Setenv("SEMAPHORE_GIT_BRANCH", "master")
-			os.Setenv("SEMAPHORE_GIT_PR_BRANCH", "")
+			os.Setenv("NEETO_CI_GIT_BRANCH", "master")
+			os.Setenv("NEETO_CI_GIT_PR_BRANCH", "")
 			os.MkdirAll("vendor/bundle", os.ModePerm)
 
 			// storing
@@ -214,12 +214,12 @@ func Test__AutomaticRestore(t *testing.T) {
 			os.Remove(compressedFile)
 		})
 
-		t.Run(fmt.Sprintf("%s detects and restores using SEMAPHORE_GIT_PR_BRANCH", backend), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%s detects and restores using NEETO_CI_GIT_PR_BRANCH", backend), func(t *testing.T) {
 			storage.Clear()
 
 			os.Chdir(fmt.Sprintf("%s/test/autocache/gems", rootPath))
-			os.Setenv("SEMAPHORE_GIT_BRANCH", "master")
-			os.Setenv("SEMAPHORE_GIT_PR_BRANCH", "some-development-branch")
+			os.Setenv("NEETO_CI_GIT_BRANCH", "master")
+			os.Setenv("NEETO_CI_GIT_PR_BRANCH", "some-development-branch")
 			os.MkdirAll("vendor/bundle", os.ModePerm)
 
 			// storing

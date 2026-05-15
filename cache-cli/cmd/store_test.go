@@ -109,12 +109,12 @@ func Test__AutomaticStore(t *testing.T) {
 			assert.Contains(t, output, fmt.Sprintf("'%s' doesn't exist locally.", filepath.FromSlash("vendor/bundle")))
 		})
 
-		t.Run(fmt.Sprintf("%s detects and stores using SEMAPHORE_GIT_BRANCH", backend), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%s detects and stores using NEETO_CI_GIT_BRANCH", backend), func(t *testing.T) {
 			storage.Clear()
 
 			os.Chdir(fmt.Sprintf("%s/test/autocache/gems", rootPath))
-			os.Setenv("SEMAPHORE_GIT_BRANCH", "master")
-			os.Setenv("SEMAPHORE_GIT_PR_BRANCH", "")
+			os.Setenv("NEETO_CI_GIT_BRANCH", "master")
+			os.Setenv("NEETO_CI_GIT_PR_BRANCH", "")
 			os.MkdirAll("vendor/bundle", os.ModePerm)
 
 			checksum, _ := files.GenerateChecksum("Gemfile.lock")
@@ -131,12 +131,12 @@ func Test__AutomaticStore(t *testing.T) {
 			os.RemoveAll("vendor")
 		})
 
-		t.Run(fmt.Sprintf("%s detects and stores using SEMAPHORE_GIT_PR_BRANCH", backend), func(t *testing.T) {
+		t.Run(fmt.Sprintf("%s detects and stores using NEETO_CI_GIT_PR_BRANCH", backend), func(t *testing.T) {
 			storage.Clear()
 
 			os.Chdir(fmt.Sprintf("%s/test/autocache/gems", rootPath))
-			os.Setenv("SEMAPHORE_GIT_BRANCH", "master")
-			os.Setenv("SEMAPHORE_GIT_PR_BRANCH", "some-development-branch")
+			os.Setenv("NEETO_CI_GIT_BRANCH", "master")
+			os.Setenv("NEETO_CI_GIT_PR_BRANCH", "some-development-branch")
 			os.MkdirAll("vendor/bundle", os.ModePerm)
 
 			checksum, _ := files.GenerateChecksum("Gemfile.lock")
@@ -157,8 +157,8 @@ func Test__AutomaticStore(t *testing.T) {
 			storage.Clear()
 
 			os.Chdir(fmt.Sprintf("%s/test/autocache/gems", rootPath))
-			os.Setenv("SEMAPHORE_GIT_BRANCH", "master")
-			os.Setenv("SEMAPHORE_GIT_PR_BRANCH", "")
+			os.Setenv("NEETO_CI_GIT_BRANCH", "master")
+			os.Setenv("NEETO_CI_GIT_PR_BRANCH", "")
 			os.MkdirAll("vendor/bundle", os.ModePerm)
 
 			checksum, _ := files.GenerateChecksum("Gemfile.lock")

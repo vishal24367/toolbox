@@ -35,7 +35,7 @@ func Test__LookupStore(t *testing.T) {
 				Entries: []LookupResultEntry{
 					{
 						Path: filepath.FromSlash(fmt.Sprintf("%s/.nvm", homedir)),
-						Keys: []string{fmt.Sprintf("nvm-master-%s", checksum)},
+						Keys: []string{fmt.Sprintf("master-nvm-%s", checksum)},
 					},
 				},
 			},
@@ -53,7 +53,7 @@ func Test__LookupStore(t *testing.T) {
 				Entries: []LookupResultEntry{
 					{
 						Path: filepath.FromSlash("vendor/bundle"),
-						Keys: []string{fmt.Sprintf("gems-master-%s", checksum)},
+						Keys: []string{fmt.Sprintf("master-gems-%s", checksum)},
 					},
 				},
 			},
@@ -69,7 +69,7 @@ func Test__LookupStore(t *testing.T) {
 			{
 				DetectedFile: "package-lock.json",
 				Entries: []LookupResultEntry{
-					{Path: "node_modules", Keys: []string{fmt.Sprintf("node-modules-master-%s", checksum)}},
+					{Path: "node_modules", Keys: []string{fmt.Sprintf("master-node-modules-%s", checksum)}},
 				},
 			},
 		})
@@ -84,7 +84,7 @@ func Test__LookupStore(t *testing.T) {
 			{
 				DetectedFile: "requirements.txt",
 				Entries: []LookupResultEntry{
-					{Path: ".pip_cache", Keys: []string{fmt.Sprintf("requirements-master-%s", checksum)}},
+					{Path: ".pip_cache", Keys: []string{fmt.Sprintf("master-requirements-%s", checksum)}},
 				},
 			},
 		})
@@ -99,7 +99,7 @@ func Test__LookupStore(t *testing.T) {
 			{
 				DetectedFile: "composer.lock",
 				Entries: []LookupResultEntry{
-					{Path: "vendor", Keys: []string{fmt.Sprintf("composer-master-%s", checksum)}},
+					{Path: "vendor", Keys: []string{fmt.Sprintf("master-composer-%s", checksum)}},
 				},
 			},
 		})
@@ -114,7 +114,7 @@ func Test__LookupStore(t *testing.T) {
 			{
 				DetectedFile: "Podfile.lock",
 				Entries: []LookupResultEntry{
-					{Path: "Pods", Keys: []string{fmt.Sprintf("pods-master-%s", checksum)}},
+					{Path: "Pods", Keys: []string{fmt.Sprintf("master-pods-%s", checksum)}},
 				},
 			},
 		})
@@ -131,7 +131,7 @@ func Test__LookupStore(t *testing.T) {
 				Entries: []LookupResultEntry{
 					{
 						Path: filepath.FromSlash(fmt.Sprintf("%s/go/pkg/mod", homedir)),
-						Keys: []string{fmt.Sprintf("go-master-%s", checksum)},
+						Keys: []string{fmt.Sprintf("master-go-%s", checksum)},
 					},
 				},
 			},
@@ -148,12 +148,8 @@ func Test__LookupStore(t *testing.T) {
 				DetectedFile: "yarn.lock",
 				Entries: []LookupResultEntry{
 					{
-						Path: filepath.FromSlash(fmt.Sprintf("%s/.cache/yarn", homedir)),
-						Keys: []string{fmt.Sprintf("yarn-cache-master-%s", checksum)},
-					},
-					{
 						Path: "node_modules",
-						Keys: []string{fmt.Sprintf("node-modules-master-%s", checksum)},
+						Keys: []string{fmt.Sprintf("master-node-modules-%s", checksum)},
 					},
 				},
 			},
@@ -169,8 +165,8 @@ func Test__LookupStore(t *testing.T) {
 			{
 				DetectedFile: "mix.lock",
 				Entries: []LookupResultEntry{
-					{Path: "deps", Keys: []string{fmt.Sprintf("mix-deps-master-%s", checksum)}},
-					{Path: "_build", Keys: []string{fmt.Sprintf("mix-build-master-%s", checksum)}},
+					{Path: "deps", Keys: []string{fmt.Sprintf("master-mix-deps-%s", checksum)}},
+					{Path: "_build", Keys: []string{fmt.Sprintf("master-mix-build-%s", checksum)}},
 				},
 			},
 		})
@@ -185,8 +181,8 @@ func Test__LookupStore(t *testing.T) {
 			{
 				DetectedFile: "pom.xml",
 				Entries: []LookupResultEntry{
-					{Path: ".m2", Keys: []string{fmt.Sprintf("maven-master-%s", checksum)}},
-					{Path: "target", Keys: []string{fmt.Sprintf("maven-target-master-%s", checksum)}},
+					{Path: ".m2", Keys: []string{fmt.Sprintf("master-maven-%s", checksum)}},
+					{Path: "target", Keys: []string{fmt.Sprintf("master-maven-target-%s", checksum)}},
 				},
 			},
 		})
@@ -204,13 +200,13 @@ func Test__LookupStore(t *testing.T) {
 			{
 				DetectedFile: "package-lock.json",
 				Entries: []LookupResultEntry{
-					{Path: "node_modules", Keys: []string{fmt.Sprintf("node-modules-master-%s", packageLockChecksum)}},
+					{Path: "node_modules", Keys: []string{fmt.Sprintf("master-node-modules-%s", packageLockChecksum)}},
 				},
 			},
 			{
 				DetectedFile: "requirements.txt",
 				Entries: []LookupResultEntry{
-					{Path: ".pip_cache", Keys: []string{fmt.Sprintf("requirements-master-%s", requirementsChecksum)}},
+					{Path: ".pip_cache", Keys: []string{fmt.Sprintf("master-requirements-%s", requirementsChecksum)}},
 				},
 			},
 		})
@@ -243,10 +239,10 @@ func Test__LookupRestore(t *testing.T) {
 					{
 						Path: filepath.FromSlash(fmt.Sprintf("%s/.nvm", homedir)),
 						Keys: []string{
-							fmt.Sprintf("nvm-some-branch-%s", checksum),
-							"nvm-some-branch",
-							"nvm-master",
-							"nvm-main",
+							fmt.Sprintf("some-branch-nvm-%s", checksum),
+							"some-branch-nvm",
+							"master-nvm",
+							"main-nvm",
 						},
 					},
 				},
@@ -266,10 +262,10 @@ func Test__LookupRestore(t *testing.T) {
 					{
 						Path: filepath.FromSlash("vendor/bundle"),
 						Keys: []string{
-							fmt.Sprintf("gems-some-branch-%s", checksum),
-							"gems-some-branch",
-							"gems-master",
-							"gems-main",
+							fmt.Sprintf("some-branch-gems-%s", checksum),
+							"some-branch-gems",
+							"master-gems",
+							"main-gems",
 						},
 					},
 				},
@@ -287,10 +283,10 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "package-lock.json",
 				Entries: []LookupResultEntry{
 					{Path: "node_modules", Keys: []string{
-						fmt.Sprintf("node-modules-some-branch-%s", checksum),
-						"node-modules-some-branch",
-						"node-modules-master",
-						"node-modules-main",
+						fmt.Sprintf("some-branch-node-modules-%s", checksum),
+						"some-branch-node-modules",
+						"master-node-modules",
+						"main-node-modules",
 					}},
 				},
 			},
@@ -307,10 +303,10 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "requirements.txt",
 				Entries: []LookupResultEntry{
 					{Path: ".pip_cache", Keys: []string{
-						fmt.Sprintf("requirements-some-branch-%s", checksum),
-						"requirements-some-branch",
-						"requirements-master",
-						"requirements-main",
+						fmt.Sprintf("some-branch-requirements-%s", checksum),
+						"some-branch-requirements",
+						"master-requirements",
+						"main-requirements",
 					}},
 				},
 			},
@@ -327,10 +323,10 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "composer.lock",
 				Entries: []LookupResultEntry{
 					{Path: "vendor", Keys: []string{
-						fmt.Sprintf("composer-some-branch-%s", checksum),
-						"composer-some-branch",
-						"composer-master",
-						"composer-main",
+						fmt.Sprintf("some-branch-composer-%s", checksum),
+						"some-branch-composer",
+						"master-composer",
+						"main-composer",
 					}},
 				},
 			},
@@ -347,10 +343,10 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "Podfile.lock",
 				Entries: []LookupResultEntry{
 					{Path: "Pods", Keys: []string{
-						fmt.Sprintf("pods-some-branch-%s", checksum),
-						"pods-some-branch",
-						"pods-master",
-						"pods-main",
+						fmt.Sprintf("some-branch-pods-%s", checksum),
+						"some-branch-pods",
+						"master-pods",
+						"main-pods",
 					}},
 				},
 			},
@@ -369,10 +365,10 @@ func Test__LookupRestore(t *testing.T) {
 					{
 						Path: filepath.FromSlash(fmt.Sprintf("%s/go/pkg/mod", homedir)),
 						Keys: []string{
-							fmt.Sprintf("go-some-branch-%s", checksum),
-							"go-some-branch",
-							"go-master",
-							"go-main",
+							fmt.Sprintf("some-branch-go-%s", checksum),
+							"some-branch-go",
+							"master-go",
+							"main-go",
 						},
 					},
 				},
@@ -390,21 +386,12 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "yarn.lock",
 				Entries: []LookupResultEntry{
 					{
-						Path: filepath.FromSlash(fmt.Sprintf("%s/.cache/yarn", homedir)),
-						Keys: []string{
-							fmt.Sprintf("yarn-cache-some-branch-%s", checksum),
-							"yarn-cache-some-branch",
-							"yarn-cache-master",
-							"yarn-cache-main",
-						},
-					},
-					{
 						Path: "node_modules",
 						Keys: []string{
-							fmt.Sprintf("node-modules-some-branch-%s", checksum),
-							"node-modules-some-branch",
-							"node-modules-master",
-							"node-modules-main",
+							fmt.Sprintf("some-branch-node-modules-%s", checksum),
+							"some-branch-node-modules",
+							"master-node-modules",
+							"main-node-modules",
 						},
 					},
 				},
@@ -422,16 +409,16 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "mix.lock",
 				Entries: []LookupResultEntry{
 					{Path: "deps", Keys: []string{
-						fmt.Sprintf("mix-deps-some-branch-%s", checksum),
-						"mix-deps-some-branch",
-						"mix-deps-master",
-						"mix-deps-main",
+						fmt.Sprintf("some-branch-mix-deps-%s", checksum),
+						"some-branch-mix-deps",
+						"master-mix-deps",
+						"main-mix-deps",
 					}},
 					{Path: "_build", Keys: []string{
-						fmt.Sprintf("mix-build-some-branch-%s", checksum),
-						"mix-build-some-branch",
-						"mix-build-master",
-						"mix-build-main",
+						fmt.Sprintf("some-branch-mix-build-%s", checksum),
+						"some-branch-mix-build",
+						"master-mix-build",
+						"main-mix-build",
 					}},
 				},
 			},
@@ -448,16 +435,16 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "pom.xml",
 				Entries: []LookupResultEntry{
 					{Path: ".m2", Keys: []string{
-						fmt.Sprintf("maven-some-branch-%s", checksum),
-						"maven-some-branch",
-						"maven-master",
-						"maven-main",
+						fmt.Sprintf("some-branch-maven-%s", checksum),
+						"some-branch-maven",
+						"master-maven",
+						"main-maven",
 					}},
 					{Path: "target", Keys: []string{
-						fmt.Sprintf("maven-target-some-branch-%s", checksum),
-						"maven-target-some-branch",
-						"maven-target-master",
-						"maven-target-main",
+						fmt.Sprintf("some-branch-maven-target-%s", checksum),
+						"some-branch-maven-target",
+						"master-maven-target",
+						"main-maven-target",
 					}},
 				},
 			},
@@ -477,10 +464,10 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "package-lock.json",
 				Entries: []LookupResultEntry{
 					{Path: "node_modules", Keys: []string{
-						fmt.Sprintf("node-modules-some-branch-%s", packageLockChecksum),
-						"node-modules-some-branch",
-						"node-modules-master",
-						"node-modules-main",
+						fmt.Sprintf("some-branch-node-modules-%s", packageLockChecksum),
+						"some-branch-node-modules",
+						"master-node-modules",
+						"main-node-modules",
 					}},
 				},
 			},
@@ -488,10 +475,10 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "requirements.txt",
 				Entries: []LookupResultEntry{
 					{Path: ".pip_cache", Keys: []string{
-						fmt.Sprintf("requirements-some-branch-%s", requirementsChecksum),
-						"requirements-some-branch",
-						"requirements-master",
-						"requirements-main",
+						fmt.Sprintf("some-branch-requirements-%s", requirementsChecksum),
+						"some-branch-requirements",
+						"master-requirements",
+						"main-requirements",
 					}},
 				},
 			},
@@ -508,9 +495,9 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "package-lock.json",
 				Entries: []LookupResultEntry{
 					{Path: "node_modules", Keys: []string{
-						fmt.Sprintf("node-modules-master-%s", checksum),
-						"node-modules-master",
-						"node-modules-main",
+						fmt.Sprintf("master-node-modules-%s", checksum),
+						"master-node-modules",
+						"main-node-modules",
 					}},
 				},
 			},
@@ -527,9 +514,9 @@ func Test__LookupRestore(t *testing.T) {
 				DetectedFile: "package-lock.json",
 				Entries: []LookupResultEntry{
 					{Path: "node_modules", Keys: []string{
-						fmt.Sprintf("node-modules-main-%s", checksum),
-						"node-modules-main",
-						"node-modules-master",
+						fmt.Sprintf("main-node-modules-%s", checksum),
+						"main-node-modules",
+						"master-node-modules",
 					}},
 				},
 			},

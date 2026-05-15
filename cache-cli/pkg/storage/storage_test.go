@@ -19,7 +19,7 @@ var testStorageTypes = map[string]TestStorageType{
 		runInWindows: true,
 		initializer: func(storageSize int64, sortBy string) (Storage, error) {
 			return NewS3Storage(S3StorageOptions{
-				URL:     os.Getenv("SEMAPHORE_CACHE_S3_URL"),
+				URL:     os.Getenv("NEETO_CI_CACHE_S3_URL"),
 				Bucket:  "semaphore-cache",
 				Project: "cache-cli",
 				Config:  StorageConfig{MaxSpace: math.MaxInt64, SortKeysBy: sortBy},
@@ -32,7 +32,7 @@ var testStorageTypes = map[string]TestStorageType{
 			return NewSFTPStorage(SFTPStorageOptions{
 				URL:            "sftp-server:22",
 				Username:       "tester",
-				PrivateKeyPath: "/root/.ssh/semaphore_cache_key",
+				PrivateKeyPath: "/root/.ssh/neeto_ci_cache_key",
 				Config:         StorageConfig{MaxSpace: storageSize, SortKeysBy: sortBy},
 			})
 		},
