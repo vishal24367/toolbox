@@ -241,6 +241,8 @@ version::main() {
 
   software=$1
   software_version=$2
+  echo "Software: ${software}"
+  echo "Version: ${software_version}"
   force=${3:-""}
   ignore=${4:-""}
   [ "$(uname)" == "Linux" ] && os_version="$(lsb_release -rs)"
@@ -254,6 +256,7 @@ version::main() {
     ignore="--ignore"
   fi
 
+  echo "Switching ${software} to version ${software_version} on ${os_version}"
   fn_name="version::change_${software}"
 
   if ! [[ $(type -t $fn_name) == function ]]; then
@@ -275,8 +278,11 @@ version::main() {
 }
 
 sem-version() {
+  echo "Hello"
   if [[ "$(uname)" == "Darwin" ]]; then
+    echo "Darwin"
     if [[ "$1" == 'ruby' ]] || [[ "$1" == 'node' ]]; then
+      echo "Ruby or Node"
       version::main "$@"
     else
       echo "`sem-version` is not supported in this environment."
@@ -284,6 +290,7 @@ sem-version() {
       exit 1
     fi
   else
+    echo "Linux"
     version::main "$@"
   fi
 }

@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"math"
+	"os"
 	"runtime"
 	"testing"
 
@@ -17,7 +19,7 @@ var testStorageTypes = map[string]TestStorageType{
 		runInWindows: true,
 		initializer: func(storageSize int64, sortBy string) (Storage, error) {
 			return NewS3Storage(S3StorageOptions{
-				URL:     os.Getenv("SEMAPHORE_CACHE_S3_URL"),
+				URL:     os.Getenv("NEETO_CI_CACHE_S3_URL"),
 				Bucket:  "semaphore-cache",
 				Project: "cache-cli",
 				Config:  StorageConfig{MaxSpace: math.MaxInt64, SortKeysBy: sortBy},
