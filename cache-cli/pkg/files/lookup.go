@@ -78,8 +78,9 @@ func resultForfile(filePath string, options LookupOptions) *LookupResult {
 			{"node-modules", "node_modules"},
 		})
 	case "yarn.lock":
+		// Only node_modules is cached: it makes `yarn install` instant on a
+		// cache hit, so restoring ~/.cache/yarn (~1.4 GB) adds no benefit.
 		return buildResult(filePath, options, []buildResultRequest{
-			{"yarn-cache", fmt.Sprintf("%s/.cache/yarn", homedir)},
 			{"node-modules", "node_modules"},
 		})
 	case "mix.lock":

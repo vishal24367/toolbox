@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/semaphoreci/toolbox/cache-cli/pkg/archive"
@@ -67,14 +68,21 @@ func RunStore(cmd *cobra.Command, args []string) {
 			return
 		}
 
+		// Each entry's compress + upload is independent, so store them
+		// concurrently instead of one cache key after another.
+		var wg sync.WaitGroup
 		for _, lookupResult := range lookupResults {
 			log.Infof("Detected %s.", lookupResult.DetectedFile)
 			for _, entry := range lookupResult.Entries {
-				log.Infof("Using default cache path '%s'.", entry.Path)
-				key := entry.Keys[0]
-				compressAndStore(storage, archiver, key, entry.Path)
+				wg.Add(1)
+				go func(entry files.LookupResultEntry) {
+					defer wg.Done()
+					log.Infof("Using default cache path '%s'.", entry.Path)
+					compressAndStore(storage, archiver, entry.Keys[0], entry.Path)
+				}(entry)
 			}
 		}
+		wg.Wait()
 	} else {
 		path := filepath.FromSlash(args[1])
 		compressAndStore(storage, archiver, args[0], path)

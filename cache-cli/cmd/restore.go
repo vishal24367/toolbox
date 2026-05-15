@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/semaphoreci/toolbox/cache-cli/pkg/archive"
@@ -53,13 +54,21 @@ func RunRestore(cmd *cobra.Command, args []string) {
 			return
 		}
 
+		// nvm, gems, node-modules etc. are independent, so restore them
+		// concurrently instead of one cache key after another.
+		var wg sync.WaitGroup
 		for _, lookupResult := range lookupResults {
 			log.Infof("Detected %s.", lookupResult.DetectedFile)
 			for _, entry := range lookupResult.Entries {
-				log.Infof("Fetching '%s' directory with cache keys '%s'...", entry.Path, strings.Join(entry.Keys, ","))
-				downloadAndUnpack(storage, archiver, metricsManager, entry.Keys)
+				wg.Add(1)
+				go func(entry files.LookupResultEntry) {
+					defer wg.Done()
+					log.Infof("Fetching '%s' directory with cache keys '%s'...", entry.Path, strings.Join(entry.Keys, ","))
+					downloadAndUnpack(storage, archiver, metricsManager, entry.Keys)
+				}(entry)
 			}
 		}
+		wg.Wait()
 	} else {
 		keys := strings.Split(args[0], ",")
 		downloadAndUnpack(storage, archiver, metricsManager, keys)
